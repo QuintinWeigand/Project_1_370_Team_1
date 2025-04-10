@@ -19,7 +19,7 @@ mongoose.connect('mongodb://localhost:27017/codeLogs')
 const logSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now },
     code: String
-});
+}, { versionKey: false }); // Disable the __v field
 const Log = mongoose.model('Log', logSchema);
 
 // API endpoint to save logs
