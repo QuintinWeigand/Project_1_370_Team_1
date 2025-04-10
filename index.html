@@ -100,6 +100,13 @@ sys.stdout = StringIO()
 
             // Display the result
             document.getElementById("output").innerText = "Output:\n" + output;
+
+            // Log the code and timestamp to the backend
+            await fetch('http://localhost:3000/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: pythonCode })
+            });
         } catch (error) {
             // Display any errors from the Python code
             document.getElementById("output").innerText = "Error:\n" + error;
