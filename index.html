@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyodide Code Executor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Pyodide Python Code Executor</h2>
+
+<!-- Text area for user input -->
+<textarea id="pythonCode" placeholder="Enter Python code here..."></textarea>
+
+<!-- Button to execute Python code -->
+<button onclick="runPython()">Run Python Code</button>
+
+<!-- Area to display the output of Python code -->
+<div id="output"></div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
+
+<script type="text/javascript">
+    // This function will load Pyodide and then run Python code from the text area
+    async function runPython() {
+        // Load Pyodide
+        let pyodide = await loadPyodide();
+
+        // Get the code from the textarea
+        let pythonCode = document.getElementById("pythonCode").value;
+
+        // Try to run the user-provided Python code and capture any errors
+        try {
+            let result = await pyodide.runPython(pythonCode);
+            // Display the result
+            document.getElementById("output").innerText = "Output:\n" + result;
+        } catch (error) {
+            // Display any errors from the Python code
+            document.getElementById("output").innerText = "Error:\n" + error;
+        }
+    }
+</script>
+
+</body>
+</html>
