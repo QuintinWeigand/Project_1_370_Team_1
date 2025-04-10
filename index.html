@@ -50,7 +50,6 @@
 <script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
 
 <script type="text/javascript">
-    // This function will load Pyodide and then run Python code from the text area
     async function runPython() {
         // Load Pyodide
         let pyodide = await loadPyodide();
@@ -60,9 +59,21 @@
 
         // Try to run the user-provided Python code and capture any errors
         try {
-            let result = await pyodide.runPython(pythonCode);
+            // Redirect standard output to capture print() statements
+            pyodide.runPython(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+            `);
+
+            // Run the Python code
+            pyodide.runPython(pythonCode);
+
+            // Get the captured output
+            let output = pyodide.runPython("sys.stdout.getvalue()");
+
             // Display the result
-            document.getElementById("output").innerText = "Output:\n" + result;
+            document.getElementById("output").innerText = "Output:\n" + output;
         } catch (error) {
             // Display any errors from the Python code
             document.getElementById("output").innerText = "Error:\n" + error;
