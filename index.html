@@ -122,7 +122,7 @@ sys.stdout = StringIO()
                 pyodide.runPython(pythonCode);
 
                 // Get the captured output
-                let output = pyodide.runPython("sys.stdout.getvalue()");
+                let output = pyodide.runPython("sys.stdout.getvalue().strip()")
 
                 // Display the result
                 document.getElementById("output").innerText = "Output:\n" + output;
