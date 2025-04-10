@@ -25,6 +25,12 @@
             cursor: pointer;
         }
 
+        button[onclick="openLoginPopup()"] {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
         #output {
             margin-top: 20px;
             white-space: pre-wrap;
@@ -60,6 +66,9 @@
 
 <h2>Python Code Executor using Pyodide</h2>
 
+<!-- Button to open the login popup -->
+<button onclick="openLoginPopup()">Login</button>
+
 <!-- Text area for user input -->
 <textarea id="pythonCode" placeholder="Enter Python code here..."></textarea>
 
@@ -70,10 +79,25 @@
 <!-- Area to display the output of Python code -->
 <div id="output"></div>
 
+<!-- Login/Register Popup -->
+<div id="loginPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border:1px solid #ccc;">
+    <h3>Login or Register</h3>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required><br><br>
+        <input type="password" id="password" placeholder="Password" required><br><br>
+        <button type="button" onclick="login()">Login</button>
+        <button type="button" onclick="register()">Register</button>
+    </form>
+    <button onclick="closeLoginPopup()">Close</button>
+</div>
+
 <script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
 
 <script type="text/javascript">
-    async function runPython() {
+    // Store the logged-in username globally
+    let loggedInUsername = 'anonymous';
+
+    async function runPython() {    
         // Show the spinner
         document.getElementById("spinner").style.visibility = "visible";
 
@@ -105,7 +129,11 @@ sys.stdout = StringIO()
             await fetch('http://localhost:3000/log', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: pythonCode })
+                body: JSON.stringify({ 
+                    username: loggedInUsername, // Use the logged-in username
+                    input: pythonCode, 
+                    output: output 
+                })
             });
         } catch (error) {
             // Display any errors from the Python code
@@ -114,6 +142,45 @@ sys.stdout = StringIO()
             // Hide the spinner
             document.getElementById("spinner").style.visibility = "hidden";
         }
+    }
+
+    function openLoginPopup() {
+        document.getElementById('loginPopup').style.display = 'block';
+    }
+
+    function closeLoginPopup() {
+        document.getElementById('loginPopup').style.display = 'none';
+    }
+
+    async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            loggedInUsername = username; // Set the logged-in username
+        }
+        alert(result.message);
+    }
+
+    async function register() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+        alert(result.message);
     }
 </script>
 
