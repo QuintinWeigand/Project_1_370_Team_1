@@ -34,6 +34,13 @@ app.post('/log', async (req, res) => {
     }
 });
 
+// API endpoint to check MongoDB connection status
+app.get('/status', (req, res) => {
+    const state = mongoose.connection.readyState; // 1 = connected, 0 = disconnected
+    // console.log("Status: " + state + { connected: state === 1 });
+    res.send({ connected: state === 1 });
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
