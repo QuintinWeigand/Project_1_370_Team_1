@@ -184,6 +184,28 @@ sys.stdout = StringIO()
         const result = await response.json();
         alert(result.message);
     }
+
+    async function checkDbStatus() {
+        try {
+            const response = await fetch('http://localhost:3000/status');
+            const data = await response.json();
+            const dbStatus = document.getElementById('db-status');
+            if (data.connected) {
+                dbStatus.style.backgroundColor = 'green'; // Set to green if connected
+            } else {
+                dbStatus.style.backgroundColor = 'red'; // Set to red if disconnected
+            }
+        } catch (error) {
+            console.error('Error checking DB status:', error);
+            document.getElementById('db-status').style.backgroundColor = 'red'; // Set to red on error
+        }
+    }
+
+    // Check the status every 5 seconds
+    setInterval(checkDbStatus, 5000);
+
+    // Initial check
+    checkDbStatus();
 </script>
 
 </body>
