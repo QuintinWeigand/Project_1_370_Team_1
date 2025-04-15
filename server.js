@@ -31,6 +31,9 @@ app.post('/register', async (req, res) => {
         if (existingUser) {
             return res.status(400).send({ message: 'Username already exists' });
         }
+        if (username.toLowerCase() === 'anonymous') {
+            return res.status(400).send({ message: 'Username "anonymous" is not allowed' });
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ username, password: hashedPassword });
         await user.save();
@@ -67,6 +70,9 @@ const Log = mongoose.model('Log', logSchema);
 app.post('/log', async (req, res) => {
     try {
         const { username, input, output } = req.body;
+        if (username.toLowerCase() === 'anonymous') {
+            return res.status(400).send({ message: 'Logs cannot be saved for the username "anonymous"' });
+        }
         const log = new Log({ username, input, output });
         await log.save();
         res.status(201).send({ message: 'Log saved successfully' });
@@ -82,7 +88,7 @@ app.get('/logs', async (req, res) => {
         if (!username) {
             return res.status(400).send({ error: 'Username is required' });
         }
-        const logs = await Log.find({ username }).sort({ timestamp: -1 }); // Sort by most recent
+        const logs = await Log.find({ username }).sort({ timestamp: -1 });
         res.status(200).send(logs);
     } catch (error) {
         res.status(500).send({ error: 'Failed to fetch logs' });
@@ -91,8 +97,7 @@ app.get('/logs', async (req, res) => {
 
 // API endpoint to check MongoDB connection status
 app.get('/status', (req, res) => {
-    const state = mongoose.connection.readyState; // 1 = connected, 0 = disconnected
-    // console.log("Status: " + state + { connected: state === 1 });
+    const state = mongoose.connection.readyState;
     res.send({ connected: state === 1 });
 });
 

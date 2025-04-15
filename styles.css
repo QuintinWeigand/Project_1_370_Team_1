@@ -32,7 +32,6 @@ button[onclick="openLoginPopup()"] {
     border: 1px solid #ddd;
 }
 
-/* Spinner styles */
 .spinner {
     display: inline-block;
     width: 20px;
@@ -42,7 +41,7 @@ button[onclick="openLoginPopup()"] {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-left: 10px;
-    visibility: hidden; /* Hidden by default */
+    visibility: hidden;
 }
 
 @keyframes spin {
@@ -60,7 +59,7 @@ button[onclick="openLoginPopup()"] {
     border-radius: 50%;
     position: fixed;
     top: 10px;
-    left: auto; /* Reset left positioning */
-    right: 10px; /* Position on the right side */
-    background-color: gray; /* Default color */
+    left: auto;
+    right: 10px;
+    background-color: gray;
 }

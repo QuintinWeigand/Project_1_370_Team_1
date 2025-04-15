@@ -42,8 +42,7 @@
     // Store the logged-in username globally
     let loggedInUsername = 'anonymous';
 
-    async function runPython() {    
-        // Show the spinner
+    async function runPython() { 
         document.getElementById("spinner").style.visibility = "visible";
 
             // Load Pyodide
@@ -75,16 +74,14 @@ sys.stdout = StringIO()
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    username: loggedInUsername, // Use the logged-in username
+                    username: loggedInUsername,
                     input: pythonCode, 
                     output: output 
                 })
             });
         } catch (error) {
-            // Display any errors from the Python code
             document.getElementById("output").innerText = "Error:\n" + error;
         } finally {
-            // Hide the spinner
             document.getElementById("spinner").style.visibility = "hidden";
         }
     }
@@ -104,26 +101,26 @@ sys.stdout = StringIO()
         const historyButton = document.getElementById('historyButton');
 
         if (loggedInUsername !== 'anonymous') {
-            loginButton.style.display = 'none'; // Hide the login button if a user is logged in
-            logoutButton.style.display = 'block'; // Show the logout button if a user is logged in
+            loginButton.style.display = 'none';
+            logoutButton.style.display = 'block';
             logoutButton.style.position = 'absolute';
             logoutButton.style.top = '5px';
-            logoutButton.style.right = '45px'; // Move logout button to where login button was
+            logoutButton.style.right = '45px';
 
-            historyButton.style.display = 'block'; // Show the history button
+            historyButton.style.display = 'block';
             historyButton.style.position = 'absolute';
             historyButton.style.top = '5px';
-            historyButton.style.right = '150px'; // Position history button 10px to the left of logout button
+            historyButton.style.right = '150px';
         } else {
-            loginButton.style.display = 'block'; // Show the login button if no user is logged in
-            logoutButton.style.display = 'none'; // Hide the logout button if no user is logged in
-            historyButton.style.display = 'none'; // Hide the history button
+            loginButton.style.display = 'block';
+            logoutButton.style.display = 'none';
+            historyButton.style.display = 'block';
         }
     }
 
     function logout() {
-        loggedInUsername = 'anonymous'; // Reset the logged-in username
-        updateLoginButton(); // Update the button visibility
+        loggedInUsername = 'anonymous';
+        updateLoginButton();
         alert('You have been logged out.');
     }
 
@@ -132,7 +129,7 @@ sys.stdout = StringIO()
         const logoutButton = document.createElement('button');
         logoutButton.id = 'logoutButton';
         logoutButton.textContent = 'Logout';
-        logoutButton.style.display = 'none'; // Initially hidden
+        logoutButton.style.display = 'none';
         logoutButton.style.position = 'absolute';
         logoutButton.style.top = '5px';
         logoutButton.style.right = '120px';
@@ -143,14 +140,14 @@ sys.stdout = StringIO()
         const historyButton = document.createElement('button');
         historyButton.id = 'historyButton';
         historyButton.textContent = 'History';
-        historyButton.style.display = 'none'; // Initially hidden
+        historyButton.style.display = 'none';
         historyButton.style.position = 'absolute';
         historyButton.style.top = '5px';
-        historyButton.style.right = '200px';
+        historyButton.style.right = '150px';
         historyButton.onclick = openHistoryPopup;
         document.body.appendChild(historyButton);
 
-        updateLoginButton(); // Ensure buttons are in the correct state on page load
+        updateLoginButton();
     });
 
     async function login() {
@@ -165,9 +162,9 @@ sys.stdout = StringIO()
 
         const result = await response.json();
         if (response.ok) {
-            loggedInUsername = username; // Set the logged-in username
-            closeLoginPopup(); // Close the login popup on successful login
-            updateLoginButton(); // Update the login button visibility
+            loggedInUsername = username;
+            closeLoginPopup();
+            updateLoginButton();
         }
         alert(result.message);
     }
@@ -192,13 +189,13 @@ sys.stdout = StringIO()
             const data = await response.json();
             const dbStatus = document.getElementById('db-status');
             if (data.connected) {
-                dbStatus.style.backgroundColor = 'green'; // Set to green if connected
+                dbStatus.style.backgroundColor = 'green';
             } else {
-                dbStatus.style.backgroundColor = 'red'; // Set to red if disconnected
+                dbStatus.style.backgroundColor = 'red';
             }
         } catch (error) {
             console.error('Error checking DB status:', error);
-            document.getElementById('db-status').style.backgroundColor = 'red'; // Set to red on error
+            document.getElementById('db-status').style.backgroundColor = 'red';
         }
     }
 
@@ -212,65 +209,83 @@ sys.stdout = StringIO()
     document.addEventListener('DOMContentLoaded', updateLoginButton);
 
     // Function to open the history popup
-async function openHistoryPopup() {
-    const popup = document.createElement('div');
-    popup.id = 'historyPopup';
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.background = 'white';
-    popup.style.padding = '20px';
-    popup.style.border = '1px solid #ccc';
-    popup.style.zIndex = '1000';
-    popup.style.width = '300px';
-    popup.style.height = '400px';
-    popup.style.overflow = 'hidden';
+    async function openHistoryPopup() {
+        const popup = document.createElement('div');
+        popup.id = 'historyPopup';
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.background = 'white';
+        popup.style.padding = '20px';
+        popup.style.border = '1px solid #ccc';
+        popup.style.zIndex = '1000';
+        popup.style.width = '300px';
+        popup.style.height = '400px';
+        popup.style.overflow = 'hidden';
 
-    const closeButton = document.createElement('button');
-    closeButton.textContent = '\u00D7'; // Unicode for '×'
-    closeButton.style.position = 'absolute';
-    closeButton.style.top = '5px';
-    closeButton.style.right = '5px';
-    closeButton.style.background = 'none';
-    closeButton.style.border = 'none';
-    closeButton.style.fontSize = '16px';
-    closeButton.style.cursor = 'pointer';
-    closeButton.onclick = () => document.body.removeChild(popup);
-    popup.appendChild(closeButton);
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '\u00D7'; // Unicode for '×'
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '5px';
+        closeButton.style.right = '5px';
+        closeButton.style.background = 'none';
+        closeButton.style.border = 'none';
+        closeButton.style.fontSize = '16px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.onclick = () => document.body.removeChild(popup);
+        popup.appendChild(closeButton);
 
-    // Add a header to the history popup
-    const header = document.createElement('h3');
-    header.textContent = 'History';
-    header.style.margin = '0';
-    header.style.padding = '10px 0';
-    header.style.textAlign = 'center';
-    popup.appendChild(header);
+        // Add a header to the history popup
+        const header = document.createElement('h3');
+        header.textContent = 'History';
+        header.style.margin = '0';
+        header.style.padding = '10px 0';
+        header.style.textAlign = 'center';
+        popup.appendChild(header);
 
-    const scrollableDiv = document.createElement('div');
-    scrollableDiv.style.overflowY = 'auto';
-    scrollableDiv.style.height = 'calc(100% - 30px)'; // Adjust for padding and close button
-    scrollableDiv.style.paddingTop = '30px';
+        const scrollableDiv = document.createElement('div');
+        scrollableDiv.style.overflowY = 'auto';
+        scrollableDiv.style.height = 'calc(100% - 30px)';
+        scrollableDiv.style.paddingTop = '30px';
 
-    const response = await fetch('http://localhost:3000/logs?username=' + loggedInUsername);
-    const logs = await response.json();
+        if (loggedInUsername === 'anonymous') {
+            const loginPrompt = document.createElement('p');
+            loginPrompt.textContent = 'Please log in to view your history.';
+            loginPrompt.style.textAlign = 'center';
+            scrollableDiv.appendChild(loginPrompt);
 
-    logs.forEach(log => {
-        const button = document.createElement('button');
-        button.textContent = log.input;
-        button.style.display = 'block'; // Ensure buttons are stacked vertically
-        button.style.marginBottom = '5px';
-        button.onclick = () => {
-            document.getElementById('pythonCode').value = log.input;
-            document.getElementById('output').innerText = 'Output:\n' + log.output;
-            document.body.removeChild(popup);
-        };
-        scrollableDiv.appendChild(button);
-    });
+            const loginButton = document.createElement('button');
+            loginButton.textContent = 'Login';
+            loginButton.style.display = 'block';
+            loginButton.style.margin = '10px auto';
+            loginButton.onclick = () => {
+                closeLoginPopup();
+                openLoginPopup();
+                document.body.removeChild(popup);
+            };
+            scrollableDiv.appendChild(loginButton);
+        } else {
+            const response = await fetch('http://localhost:3000/logs?username=' + loggedInUsername);
+            const logs = await response.json();
 
-    popup.appendChild(scrollableDiv);
-    document.body.appendChild(popup);
-}
+            logs.forEach(log => {
+                const button = document.createElement('button');
+                button.textContent = log.input;
+                button.style.display = 'block';
+                button.style.marginBottom = '5px';
+                button.onclick = () => {
+                    document.getElementById('pythonCode').value = log.input;
+                    document.getElementById('output').innerText = 'Output:\n' + log.output;
+                    document.body.removeChild(popup);
+                };
+                scrollableDiv.appendChild(button);
+            });
+        }
+
+        popup.appendChild(scrollableDiv);
+        document.body.appendChild(popup);
+    }
 </script>
 
 </body>
