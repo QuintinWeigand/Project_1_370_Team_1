@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/codeLogs')
+mongoose.connect('mongodb://mongodb:27017/codeLogs')
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -99,6 +99,14 @@ app.get('/logs', async (req, res) => {
 app.get('/status', (req, res) => {
     const state = mongoose.connection.readyState;
     res.send({ connected: state === 1 });
+});
+
+// Serve static files from the current directory
+app.use(express.static(__dirname));
+
+// Default route to serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 
 // Start the server
