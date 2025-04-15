@@ -194,13 +194,17 @@ sys.stdout = StringIO()
             const data = await response.json();
             const dbStatus = document.getElementById('db-status');
             if (data.connected) {
-                dbStatus.style.backgroundColor = 'green';
+                dbStatus.style.backgroundImage = "url('db-up.png')";
+                dbStatus.setAttribute('data-tooltip', 'Database is up');
             } else {
-                dbStatus.style.backgroundColor = 'red';
+                dbStatus.style.backgroundImage = "url('db-down.png')";
+                dbStatus.setAttribute('data-tooltip', 'Database is down');
             }
         } catch (error) {
             console.error('Error checking DB status:', error);
-            document.getElementById('db-status').style.backgroundColor = 'red';
+            const dbStatus = document.getElementById('db-status');
+            dbStatus.style.backgroundImage = "url('db-down.png')";
+            dbStatus.setAttribute('data-tooltip', 'Database is down');
         }
     }
 
@@ -319,6 +323,15 @@ sys.stdout = StringIO()
         document.body.appendChild(popup);
     }
 </script>
+
+<footer style="font-size: 12px; text-align: center; margin-top: 20px;">
+    <p>
+        <a href="https://www.flaticon.com/free-icons/db-upload" title="db upload icons">Db upload icons created by Vectorslab - Flaticon</a>
+    </p>
+    <p>
+        <a href="https://www.flaticon.com/free-icons/db-download" title="db download icons">Db download icons created by Vectorslab - Flaticon</a>
+    </p>
+</footer>
 
 </body>
 </html>
