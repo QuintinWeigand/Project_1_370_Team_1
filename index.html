@@ -83,15 +83,15 @@
 
 <!-- Login/Register Popup -->
 <div id="loginPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border:1px solid #ccc;">
-    <h3>Login or Register</h3>
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" required><br><br>
-        <input type="password" id="password" placeholder="Password" required><br><br>
-        <button type="button" onclick="login()">Login</button>
-        <button type="button" onclick="register()">Register</button>
-    </form>
-    <button onclick="closeLoginPopup()">Close</button>
-</div>
+        <h3>Login or Register</h3>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required><br><br>
+            <input type="password" id="password" placeholder="Password" required><br><br>
+            <button type="button" onclick="login()">Login</button>
+            <button type="button" onclick="register()">Register</button>
+        </form>
+        <button onclick="closeLoginPopup()" style="position:absolute; top:5px; right:5px; background:none; border:none; font-size:16px; cursor:pointer;">&times;</button>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
 
@@ -154,6 +154,43 @@ sys.stdout = StringIO()
         document.getElementById('loginPopup').style.display = 'none';
     }
 
+    function updateLoginButton() {
+        const loginButton = document.querySelector('button[onclick="openLoginPopup()"]');
+        const logoutButton = document.getElementById('logoutButton');
+
+        if (loggedInUsername !== 'anonymous') {
+            loginButton.style.display = 'none'; // Hide the login button if a user is logged in
+            logoutButton.style.display = 'block'; // Show the logout button if a user is logged in
+            logoutButton.style.position = 'absolute';
+            logoutButton.style.top = '5px';
+            logoutButton.style.right = '45px'; // Position logout button where login button was
+        } else {
+            loginButton.style.display = 'block'; // Show the login button if no user is logged in
+            logoutButton.style.display = 'none'; // Hide the logout button if no user is logged in
+        }
+    }
+
+    function logout() {
+        loggedInUsername = 'anonymous'; // Reset the logged-in username
+        updateLoginButton(); // Update the button visibility
+        alert('You have been logged out.');
+    }
+
+    // Add the logout button to the HTML
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutButton = document.createElement('button');
+        logoutButton.id = 'logoutButton';
+        logoutButton.textContent = 'Logout';
+        logoutButton.style.display = 'none'; // Initially hidden
+        logoutButton.style.position = 'absolute';
+        logoutButton.style.top = '5px';
+        logoutButton.style.right = '120px';
+        logoutButton.onclick = logout;
+        document.body.appendChild(logoutButton);
+
+        updateLoginButton(); // Ensure buttons are in the correct state on page load
+    });
+
     async function login() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -167,6 +204,8 @@ sys.stdout = StringIO()
         const result = await response.json();
         if (response.ok) {
             loggedInUsername = username; // Set the logged-in username
+            closeLoginPopup(); // Close the login popup on successful login
+            updateLoginButton(); // Update the login button visibility
         }
         alert(result.message);
     }
@@ -206,6 +245,9 @@ sys.stdout = StringIO()
 
     // Initial check
     checkDbStatus();
+
+    // Call updateLoginButton on page load to ensure correct state
+    document.addEventListener('DOMContentLoaded', updateLoginButton);
 </script>
 
 </body>
