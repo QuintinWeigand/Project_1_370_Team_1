@@ -4,67 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pyodide Code Executor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 200px;
-            font-family: monospace;
-            font-size: 16px;
-            padding: 10px;
-        }
-
-        button {
-            margin-top: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button[onclick="openLoginPopup()"] {
-            position: absolute;
-            top: 5px;
-            right: 45px;
-        }
-
-        #output {
-            margin-top: 20px;
-            white-space: pre-wrap;
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        /* Spinner styles */
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #ccc;
-            border-top: 3px solid #333;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-            visibility: hidden; /* Hidden by default */
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Circle to indicate DB status -->
-    <div id="db-status" style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 50%; background-color: red;"></div>
+    <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="db-status"></div>
 
 <h2>Python Code Executor using Pyodide</h2>
 
