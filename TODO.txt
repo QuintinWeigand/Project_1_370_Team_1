@@ -3,3 +3,4 @@ Implement user history (not just stored in RAM, using DB)
 (Maybe) A way user can clear personal history from DB
 Convert frontend to React rather than just html and javascript
 Split important frontend sections, CSS, HTML, JavaScript into different files.
+(Required) Dockerize the application
