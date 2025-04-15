@@ -241,7 +241,6 @@ sys.stdout = StringIO()
         closeButton.onclick = () => document.body.removeChild(popup);
         popup.appendChild(closeButton);
 
-        // Add a header to the history popup
         const header = document.createElement('h3');
         header.textContent = 'History';
         header.style.margin = '0';
@@ -251,7 +250,7 @@ sys.stdout = StringIO()
 
         const scrollableDiv = document.createElement('div');
         scrollableDiv.style.overflowY = 'auto';
-        scrollableDiv.style.height = 'calc(100% - 30px)';
+        scrollableDiv.style.height = 'calc(100% - 60px)';
         scrollableDiv.style.paddingTop = '30px';
 
         if (loggedInUsername === 'anonymous') {
@@ -286,6 +285,34 @@ sys.stdout = StringIO()
                 };
                 scrollableDiv.appendChild(button);
             });
+
+            if (logs.length > 0) {
+                const clearHistoryButton = document.createElement('button');
+                clearHistoryButton.textContent = 'Clear History';
+                clearHistoryButton.style.display = 'block';
+                clearHistoryButton.style.margin = '10px auto';
+                clearHistoryButton.style.backgroundColor = 'red';
+                clearHistoryButton.style.color = 'white';
+                clearHistoryButton.style.border = 'none';
+                clearHistoryButton.style.padding = '10px';
+                clearHistoryButton.style.position = 'absolute';
+                clearHistoryButton.style.bottom = '10px';
+                clearHistoryButton.style.left = '50%';
+                clearHistoryButton.style.transform = 'translateX(-50%)';
+                clearHistoryButton.onclick = async () => {
+                    const confirmClear = confirm('Are you sure you want to clear your history?');
+                    if (confirmClear) {
+                        await fetch('http://localhost:3000/clear-logs', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: loggedInUsername })
+                        });
+                        alert('History cleared successfully.');
+                        document.body.removeChild(popup);
+                    }
+                };
+                scrollableDiv.appendChild(clearHistoryButton);
+            }
         }
 
         popup.appendChild(scrollableDiv);

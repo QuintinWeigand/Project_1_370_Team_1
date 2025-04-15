@@ -95,6 +95,20 @@ app.get('/logs', async (req, res) => {
     }
 });
 
+// API endpoint to clear logs for a specific user
+app.post('/clear-logs', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) {
+            return res.status(400).send({ error: 'Username is required' });
+        }
+        await Log.deleteMany({ username });
+        res.status(200).send({ message: 'Logs cleared successfully' });
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to clear logs' });
+    }
+});
+
 // API endpoint to check MongoDB connection status
 app.get('/status', (req, res) => {
     const state = mongoose.connection.readyState;
