@@ -4,67 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pyodide Code Executor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 200px;
-            font-family: monospace;
-            font-size: 16px;
-            padding: 10px;
-        }
-
-        button {
-            margin-top: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button[onclick="openLoginPopup()"] {
-            position: absolute;
-            top: 5px;
-            right: 45px;
-        }
-
-        #output {
-            margin-top: 20px;
-            white-space: pre-wrap;
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        /* Spinner styles */
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #ccc;
-            border-top: 3px solid #333;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-            visibility: hidden; /* Hidden by default */
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Circle to indicate DB status -->
-    <div id="db-status" style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 50%; background-color: red;"></div>
+    <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="db-status"></div>
 
 <h2>Python Code Executor using Pyodide</h2>
 
@@ -154,19 +97,27 @@ sys.stdout = StringIO()
         document.getElementById('loginPopup').style.display = 'none';
     }
 
+    // Adjust the positions of the logout and history buttons
     function updateLoginButton() {
         const loginButton = document.querySelector('button[onclick="openLoginPopup()"]');
         const logoutButton = document.getElementById('logoutButton');
+        const historyButton = document.getElementById('historyButton');
 
         if (loggedInUsername !== 'anonymous') {
             loginButton.style.display = 'none'; // Hide the login button if a user is logged in
             logoutButton.style.display = 'block'; // Show the logout button if a user is logged in
             logoutButton.style.position = 'absolute';
             logoutButton.style.top = '5px';
-            logoutButton.style.right = '45px'; // Position logout button where login button was
+            logoutButton.style.right = '45px'; // Move logout button to where login button was
+
+            historyButton.style.display = 'block'; // Show the history button
+            historyButton.style.position = 'absolute';
+            historyButton.style.top = '5px';
+            historyButton.style.right = '150px'; // Position history button 10px to the left of logout button
         } else {
             loginButton.style.display = 'block'; // Show the login button if no user is logged in
             logoutButton.style.display = 'none'; // Hide the logout button if no user is logged in
+            historyButton.style.display = 'none'; // Hide the history button
         }
     }
 
@@ -187,6 +138,17 @@ sys.stdout = StringIO()
         logoutButton.style.right = '120px';
         logoutButton.onclick = logout;
         document.body.appendChild(logoutButton);
+
+        // Add a history button to the HTML
+        const historyButton = document.createElement('button');
+        historyButton.id = 'historyButton';
+        historyButton.textContent = 'History';
+        historyButton.style.display = 'none'; // Initially hidden
+        historyButton.style.position = 'absolute';
+        historyButton.style.top = '5px';
+        historyButton.style.right = '200px';
+        historyButton.onclick = openHistoryPopup;
+        document.body.appendChild(historyButton);
 
         updateLoginButton(); // Ensure buttons are in the correct state on page load
     });
@@ -248,6 +210,67 @@ sys.stdout = StringIO()
 
     // Call updateLoginButton on page load to ensure correct state
     document.addEventListener('DOMContentLoaded', updateLoginButton);
+
+    // Function to open the history popup
+async function openHistoryPopup() {
+    const popup = document.createElement('div');
+    popup.id = 'historyPopup';
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.background = 'white';
+    popup.style.padding = '20px';
+    popup.style.border = '1px solid #ccc';
+    popup.style.zIndex = '1000';
+    popup.style.width = '300px';
+    popup.style.height = '400px';
+    popup.style.overflow = 'hidden';
+
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '\u00D7'; // Unicode for '×'
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '5px';
+    closeButton.style.right = '5px';
+    closeButton.style.background = 'none';
+    closeButton.style.border = 'none';
+    closeButton.style.fontSize = '16px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.onclick = () => document.body.removeChild(popup);
+    popup.appendChild(closeButton);
+
+    // Add a header to the history popup
+    const header = document.createElement('h3');
+    header.textContent = 'History';
+    header.style.margin = '0';
+    header.style.padding = '10px 0';
+    header.style.textAlign = 'center';
+    popup.appendChild(header);
+
+    const scrollableDiv = document.createElement('div');
+    scrollableDiv.style.overflowY = 'auto';
+    scrollableDiv.style.height = 'calc(100% - 30px)'; // Adjust for padding and close button
+    scrollableDiv.style.paddingTop = '30px';
+
+    const response = await fetch('http://localhost:3000/logs?username=' + loggedInUsername);
+    const logs = await response.json();
+
+    logs.forEach(log => {
+        const button = document.createElement('button');
+        button.textContent = log.input;
+        button.style.display = 'block'; // Ensure buttons are stacked vertically
+        button.style.marginBottom = '5px';
+        button.onclick = () => {
+            document.getElementById('pythonCode').value = log.input;
+            document.getElementById('output').innerText = 'Output:\n' + log.output;
+            document.body.removeChild(popup);
+        };
+        scrollableDiv.appendChild(button);
+    });
+
+    popup.appendChild(scrollableDiv);
+    document.body.appendChild(popup);
+}
 </script>
 
 </body>
