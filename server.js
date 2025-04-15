@@ -75,6 +75,20 @@ app.post('/log', async (req, res) => {
     }
 });
 
+// Add an endpoint to fetch logs for a specific user
+app.get('/logs', async (req, res) => {
+    try {
+        const { username } = req.query;
+        if (!username) {
+            return res.status(400).send({ error: 'Username is required' });
+        }
+        const logs = await Log.find({ username }).sort({ timestamp: -1 }); // Sort by most recent
+        res.status(200).send(logs);
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to fetch logs' });
+    }
+});
+
 // API endpoint to check MongoDB connection status
 app.get('/status', (req, res) => {
     const state = mongoose.connection.readyState; // 1 = connected, 0 = disconnected
