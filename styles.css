@@ -54,12 +54,34 @@ button[onclick="openLoginPopup()"] {
 }
 
 #db-status {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    position: fixed;
-    top: 10px;
-    left: auto;
-    right: 10px;
-    background-color: gray;
+    width: 50px;
+    height: 50px;
+    background-image: url('database-icon.png'); /* Replace with the path to your database logo */
+    background-size: cover;
+    background-position: center;
+    border-radius: 0; /* Remove circular shape */
+    display: inline-block;
+    position: relative;
+}
+
+#db-status::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-size: 12px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+#db-status:hover::after {
+    visibility: visible;
+    opacity: 1;
 }
