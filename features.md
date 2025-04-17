@@ -14,7 +14,7 @@ The Python Code Executor is a web-based application designed to allow users to w
 - Logged-in users can save their code execution history for future reference.
 
 ### 3. **Code Execution History**
-- Logged-in users can view a history of their executed Python code along with the corresponding output.
+- Logged-in users can view a history of their executed Python code.
 - Users can re-run previous code snippets directly from the history.
 - Option to clear the history is also available.
 
