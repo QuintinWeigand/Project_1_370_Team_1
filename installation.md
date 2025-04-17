@@ -16,18 +16,14 @@ Before you begin, ensure you have the following installed on your system:
    Open a terminal and run the following command to clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/QuintinWeigand/Project_1_370_Team_1.git
    ```
-
-   Replace `<repository-url>` with the actual URL of the GitHub repository.
 
 2. **Navigate to the Project Directory**
 
    ```bash
-   cd <repository-folder>
+   cd Project_1_370_Team_1
    ```
-
-   Replace `<repository-folder>` with the name of the folder created after cloning the repository.
 
 3. **Set Up Docker**
 
